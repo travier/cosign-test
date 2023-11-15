@@ -47,7 +47,7 @@ jobs:
           layers: false
           oci: true
 
-      - name: Push to Quay.io
+      - name: Push to Container Registry
         uses: redhat-actions/push-to-registry@v2
         id: push
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
@@ -57,6 +57,13 @@ jobs:
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
           tags: ${{ env.TAGS }}
+
+      - name: Login to Container Registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_SECRET }}
 
       - uses: sigstore/cosign-installer@v3.2.0
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
