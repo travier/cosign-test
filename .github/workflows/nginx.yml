@@ -41,7 +41,7 @@ jobs:
         with:
           context: ${{ env.NAME }}
           image: ${{ env.NAME }}
-          tags: ${{ env.TAGS }}
+          tags: tosign
           containerfiles: ${{ env.NAME }}/Containerfile
           layers: false
           oci: true
