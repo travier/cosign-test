@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build container image
+        id: build
         uses: redhat-actions/buildah-build@v2
         with:
           context: ${{ env.NAME }}
@@ -52,7 +53,7 @@ jobs:
       - name: Sign container image locally
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ env.NAME }}:${{ github.sha }}
+          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ env.NAME }}@${{ steps.build.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
