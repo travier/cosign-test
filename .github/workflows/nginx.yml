@@ -41,7 +41,7 @@ jobs:
         with:
           context: ${{ env.NAME }}
           image: ${{ env.NAME }}
-          tags: tosign
+          tags: ${{ github.sha }}
           containerfiles: ${{ env.NAME }}/Containerfile
           layers: false
           oci: true
@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.BOT_SECRET }}
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
-          tags: tosign
+          tags: ${{ github.sha }}
 
       - name: Login to Container Registry
         uses: redhat-actions/podman-login@v1
@@ -68,7 +68,6 @@ jobs:
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
 
       - name: Sign container image
-        id: sign
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
           cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
@@ -76,12 +75,17 @@ jobs:
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
 
+      - name: Add latest tag
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
+        run: |
+          podman tag ${{ env.NAME }}:${{ github.sha }} ${{ env.NAME }}:latest
+
       - name: Push latest tag to Container Registry
         uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
           username: ${{ secrets.BOT_USERNAME }}
           password: ${{ secrets.BOT_SECRET }}
-          image: ${{ env.NAME }}:tosign
+          image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
           tags: latest
