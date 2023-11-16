@@ -1,7 +1,6 @@
 FROM registry.fedoraproject.org/fedora:39
 
-# Keep container image for ~3 months
-LABEL quay.expires-after=12w
+LABEL quay.expires-after=30m
 
 # Install nginx, remove unneeded packages and remove all SUID/SGID binaries
 RUN rm /etc/dnf/protected.d/sudo.conf && \
