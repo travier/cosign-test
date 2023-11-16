@@ -80,12 +80,12 @@ jobs:
         run: |
           podman tag ${{ env.NAME }}:${{ github.sha }} ${{ env.NAME }}:latest
 
-      # - name: Push latest tag to Container Registry
-      #   uses: redhat-actions/push-to-registry@v2
-      #   if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
-      #   with:
-      #     username: ${{ secrets.BOT_USERNAME }}
-      #     password: ${{ secrets.BOT_SECRET }}
-      #     image: ${{ env.NAME }}
-      #     registry: ${{ env.REGISTRY }}
-      #     tags: latest
+      - name: Push latest tag to Container Registry
+        uses: redhat-actions/push-to-registry@v2
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
+        with:
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_SECRET }}
+          image: ${{ env.NAME }}
+          registry: ${{ env.REGISTRY }}
+          tags: latest
