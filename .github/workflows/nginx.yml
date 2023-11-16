@@ -9,13 +9,13 @@ on:
     branches:
       - main
     paths:
-      - nginx/*
+      - nginx-test/*
       - .github/workflows/nginx.yml
   push:
     branches:
       - main
     paths:
-      - nginx/*
+      - nginx-test/*
       - .github/workflows/nginx.yml
   schedule:
     - cron:  '0 0 * * MON'
