@@ -46,41 +46,25 @@ jobs:
           layers: false
           oci: true
 
-      - name: Push to Container Registry
-        uses: redhat-actions/push-to-registry@v2
-        id: push
-        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
-        with:
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_SECRET }}
-          image: ${{ env.NAME }}
-          registry: ${{ env.REGISTRY }}
-          tags: ${{ github.sha }}
-
-      - name: Login to Container Registry
-        uses: redhat-actions/podman-login@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.BOT_USERNAME }}
-          password: ${{ secrets.BOT_SECRET }}
-
       - uses: sigstore/cosign-installer@v3.2.0
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
 
-      - name: Sign container image
+      - name: Sign container image locally
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
+          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ env.NAME }}@${{ steps.push.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: false
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
 
-      - name: Add latest tag
+      - name: Copy to all final tags
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
-          podman tag ${{ env.NAME }}:${{ github.sha }} ${{ env.NAME }}:latest
+          cosign copy ${{ env.NAME }}@${{ github.sha }} ${{ env.NAME }}:latest
+        env:
+          COSIGN_EXPERIMENTAL: false
 
-      - name: Push latest tag to Container Registry
+      - name: Push tags to Container Registry
         uses: redhat-actions/push-to-registry@v2
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
@@ -88,4 +72,4 @@ jobs:
           password: ${{ secrets.BOT_SECRET }}
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
-          tags: latest
+          tags: latest ${{ github.sha }}
