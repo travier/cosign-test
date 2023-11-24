@@ -1,4 +1,4 @@
-name: "Build nginx image"
+name: "podman sigstore sign test"
 
 env:
   NAME: "nginx-test"
@@ -9,15 +9,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - nginx-test/*
-      - .github/workflows/nginx.yml
   push:
     branches:
       - main
-    paths:
-      - nginx-test/*
-      - .github/workflows/nginx.yml
   schedule:
     - cron:  '0 0 * * MON'
 
@@ -61,7 +55,7 @@ jobs:
         with:
           context: ${{ env.NAME }}
           image: ${{ env.NAME }}
-          tags: latest
+          tags: latest-podman
           containerfiles: ${{ env.NAME }}/Containerfile
           layers: false
           oci: true
@@ -85,7 +79,7 @@ jobs:
           password: ${{ secrets.BOT_SECRET }}
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
-          tags: latest
+          tags: latest-podman
           # sigstore-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
           extra-args: |
             --sign-by-sigstore-private-key
