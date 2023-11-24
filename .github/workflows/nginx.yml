@@ -3,6 +3,7 @@ name: "Build nginx image"
 env:
   NAME: "nginx-test"
   REGISTRY: "quay.io/travier"
+  REGISTRY_DOMAIN: "quay.io"
 
 on:
   pull_request:
@@ -48,6 +49,11 @@ jobs:
             | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
           sudo apt-get update -qq
           sudo apt-get -qq -y install podman
+
+      - name: Setup config to enable pushing Sigstore signatures
+        run: |
+          echo -e "docker:\n  ${{ env.REGISTRY_DOMAIN }}:\n    use-sigstore-attachments: true" \
+            | sudo tee -a /etc/containers/registries.d/${{ env.REGISTRY_DOMAIN }}.yaml
 
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
