@@ -51,6 +51,7 @@ jobs:
           sudo apt-get -qq -y install podman
 
       - name: Setup config to enable pushing Sigstore signatures
+        shell: bash
         run: |
           echo -e "docker:\n  ${{ env.REGISTRY_DOMAIN }}:\n    use-sigstore-attachments: true" \
             | sudo tee -a /etc/containers/registries.d/${{ env.REGISTRY_DOMAIN }}.yaml
@@ -65,6 +66,15 @@ jobs:
           layers: false
           oci: true
 
+      - name: Write secrets to temporary files
+        shell: bash
+        run: |
+          python -c "import os; file = open('/home/runner/work/_temp/sigstore_private_key', 'w'); file.write(os.environ['SIGSTORE_PRIVATE_KEY']); file.close()"
+          python -c "import os; file = open('/home/runner/work/_temp/sign_passphrase', 'w'); file.write(os.environ['SIGN_PASSPHRASE']); file.close()"
+        env:
+          SIGSTORE_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          SIGN_PASSPHRASE: ""
+
       - name: Push to Container Registry
         # uses: redhat-actions/push-to-registry@v2
         uses: travier/push-to-registry@sigstore-signing
@@ -76,4 +86,14 @@ jobs:
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
           tags: latest
-          sigstore-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          # sigstore-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          extra-args: |
+            --sign-by-sigstore-private-key
+            /home/runner/work/_temp/sigstore_private_key
+            --sign-passphrase-file
+            /home/runner/work/_temp/sign_passphrase
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          rm -f /home/runner/work/_temp/sigstore_private_key /home/runner/work/_temp/sign_passphrase
