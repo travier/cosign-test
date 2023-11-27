@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: quay.io/travier/podman-action
-      options: --privileged
+      options: --privileged -v /proc/:/host/proc/:ro
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -41,13 +41,13 @@ jobs:
       - name: Setup QEMU for multi-arch builds
         shell: bash
         run: |
-          sudo dnf install -y systemd-udev
-          sudo /usr/lib/systemd/systemd-binfmt /usr/lib/binfmt.d/*
+          for f in /usr/lib/binfmt.d/*; do cat $f | sudo tee /host/proc/sys/fs/binfmt_misc/register; done
+          ls /host/proc/sys/fs/binfmt_misc
 
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
         with:
-          archs: x86_64, aarch64, ppc64le, s390x
+          archs: amd64, arm64, ppc64le, s390x
           context: ${{ env.NAME }}
           image: ${{ env.NAME }}
           tags: latest-podman
