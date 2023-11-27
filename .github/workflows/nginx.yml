@@ -9,9 +9,13 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - .github/workflows/nginx-cosign.yml
   push:
     branches:
       - main
+    paths-ignore:
+      - .github/workflows/nginx-cosign.yml
   schedule:
     - cron:  '0 0 * * MON'
 

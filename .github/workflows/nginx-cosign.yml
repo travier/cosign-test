@@ -8,9 +8,13 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - .github/workflows/nginx.yml
   push:
     branches:
       - main
+    paths-ignore:
+      - .github/workflows/nginx.yml
   schedule:
     - cron:  '0 0 * * MON'
 
