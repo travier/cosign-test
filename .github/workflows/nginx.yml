@@ -54,6 +54,7 @@ jobs:
           containerfiles: ${{ env.NAME }}/Containerfile
           layers: false
           oci: true
+          extra-args: --jobs 4
 
       - name: Setup config to enable pushing Sigstore signatures
         shell: bash
