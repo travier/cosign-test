@@ -33,6 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: quay.io/travier/podman-action
+      options: --device /dev/fuse
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
