@@ -28,10 +28,15 @@ jobs:
   build-push-image:
     runs-on: ubuntu-latest
     container:
-      image: quay.io/podman/stable
+      image: quay.io/fedora/fedora:latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Install podman, buildah, skopeo
+        run: |
+          sudo dnf update -y
+          sudo dnf install -y podman buildah skopeo
 
       - name: Setup config to enable pushing Sigstore signatures
         shell: bash
