@@ -28,12 +28,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# See: https://www.redhat.com/sysadmin/podman-inside-container
 jobs:
   build-push-image:
     runs-on: ubuntu-latest
     container:
       image: quay.io/travier/podman-action
-      options: --privileged
+      options: --cap-add=sys_admin --cap-add mknod --device=/dev/fuse --security-opt seccomp=unconfined --security-opt label=disable
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
