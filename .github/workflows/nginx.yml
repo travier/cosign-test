@@ -41,8 +41,8 @@ jobs:
       - name: Setup QEMU for multi-arch builds
         shell: bash
         run: |
-          sudo dnf install -y qemu-user-static
-          /usr/lib/systemd/systemd-binfmt /usr/lib/binfmt.d/*
+          sudo dnf install -y systemd-udev
+          sudo /usr/lib/systemd/systemd-binfmt /usr/lib/binfmt.d/*
 
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
