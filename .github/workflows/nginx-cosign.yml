@@ -34,9 +34,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Setup QEMU for multi-arch builds
+        shell: bash
+        run: |
+          sudo apt install qemu-user-static
+          # for f in /usr/lib/binfmt.d/*; do cat $f | sudo tee /host/proc/sys/fs/binfmt_misc/register; done
+          # ls /host/proc/sys/fs/binfmt_misc
+
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
         with:
+          archs: amd64, arm64, ppc64le, s390x
           context: ${{ env.NAME }}
           image: ${{ env.NAME }}
           tags: latest-cosign
