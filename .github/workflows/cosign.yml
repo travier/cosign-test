@@ -9,11 +9,13 @@ on:
     branches:
       - main
     paths-ignore:
+      - README.md
       - .github/workflows/podman.yml
   push:
     branches:
       - main
     paths-ignore:
+      - README.md
       - .github/workflows/podman.yml
   schedule:
     - cron:  '0 0 * * MON'
