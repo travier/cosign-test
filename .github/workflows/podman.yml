@@ -1,7 +1,7 @@
-name: "podman sigstore sign test"
+name: "Build container using buildah and sign it using podman"
 
 env:
-  NAME: "nginx-test"
+  NAME: "cosign-example"
   REGISTRY: "quay.io/travier"
   REGISTRY_DOMAIN: "quay.io"
 
@@ -10,12 +10,12 @@ on:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/nginx-cosign.yml
+      - .github/workflows/cosign.yml
   push:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/nginx-cosign.yml
+      - .github/workflows/cosign.yml
   schedule:
     - cron:  '0 0 * * MON'
 
@@ -73,4 +73,5 @@ jobs:
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
           tags: latest-podman
+          # extra-args: --sign-by-sigstore-private-key ${{ secrets.COSIGN_PRIVATE_KEY }} --sign-passphrase-file empty
           sigstore-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}

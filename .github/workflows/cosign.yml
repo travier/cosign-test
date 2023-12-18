@@ -1,7 +1,7 @@
-name: "cosign test"
+name: "Build container using buildah/podman and sign it using cosign"
 
 env:
-  NAME: "nginx-test"
+  NAME: "cosign-example"
   REGISTRY: "quay.io/travier"
 
 on:
@@ -9,12 +9,12 @@ on:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/nginx.yml
+      - .github/workflows/podman.yml
   push:
     branches:
       - main
     paths-ignore:
-      - .github/workflows/nginx.yml
+      - .github/workflows/podman.yml
   schedule:
     - cron:  '0 0 * * MON'
 
@@ -38,8 +38,6 @@ jobs:
         shell: bash
         run: |
           sudo apt install qemu-user-static
-          # for f in /usr/lib/binfmt.d/*; do cat $f | sudo tee /host/proc/sys/fs/binfmt_misc/register; done
-          # ls /host/proc/sys/fs/binfmt_misc
 
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
