@@ -56,6 +56,7 @@ jobs:
           oci: true
 
       - name: Setup config to enable pushing Sigstore signatures
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         shell: bash
         run: |
           echo -e "docker:\n  ${{ env.REGISTRY_DOMAIN }}:\n    use-sigstore-attachments: true" \
