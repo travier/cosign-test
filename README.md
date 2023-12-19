@@ -4,7 +4,7 @@ Example and test repo used to test building container with podman/buildah and
 sign them with podman or cosign / sigstore in GitHub Actions.
 
 See the resulting / in progress PRs / issues:
-- Old podman version in `ubuntu-latest` (22.04)in GitHub Actions runners:
+- Old podman version in `ubuntu-latest` (22.04) in GitHub Actions runners:
   - https://github.com/containers/podman/issues/20771
   - https://github.com/redhat-actions/buildah-build/issues/131
   - Workaround: https://github.com/travier/podman-action
