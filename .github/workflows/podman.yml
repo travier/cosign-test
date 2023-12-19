@@ -1,4 +1,4 @@
-name: "Build container using buildah and sign it using podman"
+name: "Build container using buildah, push and sign it using podman"
 
 env:
   NAME: "cosign-example"
@@ -10,11 +10,13 @@ on:
     branches:
       - main
     paths-ignore:
+      - README.md
       - .github/workflows/cosign.yml
   push:
     branches:
       - main
     paths-ignore:
+      - README.md
       - .github/workflows/cosign.yml
   schedule:
     - cron:  '0 0 * * MON'
@@ -42,7 +44,7 @@ jobs:
         shell: bash
         run: |
           for f in /usr/lib/binfmt.d/*; do cat $f | sudo tee /host/proc/sys/fs/binfmt_misc/register; done
-          ls /host/proc/sys/fs/binfmt_misc
+          # ls /host/proc/sys/fs/binfmt_misc
 
       - name: Build container image
         uses: redhat-actions/buildah-build@v2
