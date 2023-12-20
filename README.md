@@ -21,7 +21,7 @@ See the resulting / in progress PRs / issues:
 How to configure sigstore signature verification in podman:
 
 ```
-$ sudo mkdir /etc/pki/containers
+$ sudo mkdir -p /etc/pki/containers
 $ curl -O "https://raw.githubusercontent.com/travier/cosign-test/main/quay.io-travier-containers.pub"
 $ sudo cp quay.io-travier-containers.pub /etc/pki/containers/
 $ sudo restorecon -RFv /etc/pki/containers
@@ -64,6 +64,65 @@ $ cat /etc/containers/policy.json
 ...
 ```
 
+For keyless signatures:
+
+```
+$ sudo mkdir -p /etc/pki/containers
+$ curl -O "https://raw.githubusercontent.com/sigstore/root-signing/main/targets/fulcio_v1.crt.pem"
+$ curl -O "https://raw.githubusercontent.com/sigstore/root-signing/main/targets/rekor.pub"
+$ sudo cp fulcio_v1.crt.pem rekor.pub /etc/pki/containers/
+$ sudo restorecon -RFv /etc/pki/containers
+
+$ cat /etc/containers/registries.d/ghcr.io-travier.yaml
+docker:
+  ghcr.io/travier:
+    use-sigstore-attachments: true
+$ sudo restorecon -RFv /etc/containers/registries.d/ghcr.io-travier.yaml
+
+$ cat /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "reject"
+        }
+    ],
+    "transports": {
+        "docker": {
+            ...
+            "ghcr.io/travier": [
+            {
+                "type": "sigstoreSigned",
+                "fulcio": {
+                    "caPath": "/etc/pki/containers/fulcio_v1.crt.pem",
+                    "oidcIssuer": "https://token.actions.githubusercontent.com",
+                    "subjectEmail": "https://github.com/travier/cosign-test/.github/workflows/cosign-keyless.yml@refs/heads/main"
+                },
+                "rekorPublicKeyPath": "/etc/pki/containers/rekor.pub",
+                "signedIdentity": {
+                    "type": "matchRepository"
+                }
+            }
+            ],
+            ...
+            "": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ]
+        },
+        ...
+    }
+}
+...
+
+```
+
+Verifying with cosign:
+
+```
+$ COSIGN_EXPERIMENTAL=true cosign verify --certificate-identity "https://github.com/travier/cosign-test/.github/workflows/cosign-keyless.yml@refs/heads/main" --certificate-oidc-issuer https://token.actions.githubusercontent.com ghcr.io/travier/cosign-test | jq
+
+```
 
 ## License
 
