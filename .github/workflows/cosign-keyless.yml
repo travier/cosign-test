@@ -2,6 +2,7 @@ name: "Build container using buildah/podman and sign it using cosign (keyless)"
 
 env:
   NAME: ${{ github.repository }}
+  CONTEXT: "cosign-example"
   REGISTRY: ghcr.io/${{ github.repository_owner }}
 
 on:
@@ -48,10 +49,10 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           archs: amd64, arm64, ppc64le, s390x
-          context: ${{ env.NAME }}
+          context: ${{ env.CONTEXT }}
           image: ${{ env.NAME }}
           tags: latest
-          containerfiles: ${{ env.NAME }}/Containerfile
+          containerfiles: ${{ env.CONTEXT }}/Containerfile
           layers: false
           oci: true
 
