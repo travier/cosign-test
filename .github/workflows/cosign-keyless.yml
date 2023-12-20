@@ -3,7 +3,7 @@ name: "Build container using buildah/podman and sign it using cosign (keyless)"
 env:
   NAME: ${{ github.repository }}
   CONTEXT: "cosign-example"
-  REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY: 'ghcr.io'
 
 on:
   pull_request:
@@ -85,6 +85,6 @@ jobs:
       - name: Sign container image (keyless)
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
-          cosign sign ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
+          cosign sign -y ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: 1
