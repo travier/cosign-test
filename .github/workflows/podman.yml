@@ -9,15 +9,15 @@ on:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - README.md
-      - .github/workflows/cosign.yml
+    paths:
+      - 'cosign-example/**'
+      - '.github/workflows/podman.yml'
   push:
     branches:
       - main
-    paths-ignore:
-      - README.md
-      - .github/workflows/cosign.yml
+    paths:
+      - 'cosign-example/**'
+      - '.github/workflows/podman.yml'
   schedule:
     - cron:  '0 0 * * MON'
 
