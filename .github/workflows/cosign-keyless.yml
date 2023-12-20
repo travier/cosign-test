@@ -21,10 +21,14 @@ on:
   schedule:
     - cron:  '0 0 * * MON'
 
-# Allow write access to packages to allow access to GitHub container registry
+# Allow:
+# - Read access to the repo content
+# - Write access to packages to allow access to GitHub container registry
+# - Write access to id-token to get an OIDC token for this workflow
 permissions:
   contents: read
   packages: write
+  id-token: write
 
 # Prevent multiple workflow runs from racing to ensure that pushes are made
 # sequentialy for the main branch. Also cancel in progress workflow runs for
@@ -81,6 +85,6 @@ jobs:
       - name: Sign container image (keyless)
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
-          cosign sign -y ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
+          cosign sign ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: 1
