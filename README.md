@@ -12,9 +12,11 @@ See the resulting / in progress PRs / issues:
   - https://github.com/redhat-actions/push-to-registry/issues/89
   - https://github.com/redhat-actions/push-to-registry/pull/90
 - Missing options in `podman image trust` to set the policy via the command
-  line only (see below, issue to be filled).
-- Missing command in podman to easily verify that an image is correctly signed
-  (issue to be filled).
+  line only:
+  - https://github.com/containers/podman/issues/16624
+  - See below for workaround
+- Missing command in podman to easily verify that an image is correctly signed:
+  - Issue to be filled
 
 ## Verifying sigstore container signatures made with self-managed keys
 
@@ -28,7 +30,8 @@ $ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-exam
 ```
 
 How to configure signature verification in podman (does not work for multi-arch
-images yet):
+images yet, see
+[containers/podman#21209](https://github.com/containers/podman/issues/21209)):
 
 ```
 $ sudo mkdir -p /etc/pki/containers
