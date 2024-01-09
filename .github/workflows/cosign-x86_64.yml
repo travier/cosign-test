@@ -61,7 +61,7 @@ jobs:
           password: ${{ secrets.BOT_SECRET }}
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
-          tags: latest-cosign
+          tags: latest-cosign-x86_64
 
       - name: Login to Container Registry
         uses: redhat-actions/podman-login@v1
