@@ -16,9 +16,7 @@ See the resulting / in progress PRs / issues:
 - Missing command in podman to easily verify that an image is correctly signed
   (issue to be filled).
 
-## Verifying sigstore container signatures with podman
-
-### Using self-managed keys
+## Verifying sigstore container signatures made with self-managed keys
 
 Verifying with cosign:
 
@@ -29,7 +27,8 @@ $ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-exam
 $ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-example:latest-podman
 ```
 
-How to configure sgnature verification in podman (does not work for multi-arch images yet):
+How to configure signature verification in podman (does not work for multi-arch
+images yet):
 
 ```
 $ sudo mkdir -p /etc/pki/containers
@@ -75,7 +74,7 @@ $ cat /etc/containers/policy.json
 ...
 ```
 
-### For keyless signatures
+## Verifying sigstore container image keyless signatures
 
 Verifying with cosign:
 
