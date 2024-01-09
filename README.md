@@ -18,10 +18,21 @@ See the resulting / in progress PRs / issues:
 
 ## Verifying sigstore container signatures with podman
 
-How to configure sigstore signature verification in podman:
+### Using self-managed keys
+
+Verifying with cosign:
 
 ```
-$ sudo mkdir /etc/pki/containers
+$ curl -O "https://raw.githubusercontent.com/travier/cosign-test/main/quay.io-travier-containers.pub"
+$ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-example:latest-cosign
+# Podman does not push the signature to rekor thus cosign can not verify it
+$ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-example:latest-podman
+```
+
+How to configure sgnature verification in podman (does not work for multi-arch images yet):
+
+```
+$ sudo mkdir -p /etc/pki/containers
 $ curl -O "https://raw.githubusercontent.com/travier/cosign-test/main/quay.io-travier-containers.pub"
 $ sudo cp quay.io-travier-containers.pub /etc/pki/containers/
 $ sudo restorecon -RFv /etc/pki/containers
@@ -64,6 +75,66 @@ $ cat /etc/containers/policy.json
 ...
 ```
 
+### For keyless signatures
+
+Verifying with cosign:
+
+```
+$ COSIGN_EXPERIMENTAL=true cosign verify --certificate-identity "https://github.com/travier/cosign-test/.github/workflows/cosign-keyless.yml@refs/heads/main" --certificate-oidc-issuer https://token.actions.githubusercontent.com ghcr.io/travier/cosign-test | jq
+```
+
+For keyless signatures (does not work yet, see
+[containers/image#2235](https://github.com/containers/image/pull/2235)):
+
+```
+$ sudo mkdir -p /etc/pki/containers
+$ curl -O "https://raw.githubusercontent.com/sigstore/root-signing/main/targets/fulcio_v1.crt.pem"
+$ curl -O "https://raw.githubusercontent.com/sigstore/root-signing/main/targets/rekor.pub"
+$ sudo cp fulcio_v1.crt.pem rekor.pub /etc/pki/containers/
+$ sudo restorecon -RFv /etc/pki/containers
+
+$ cat /etc/containers/registries.d/ghcr.io-travier.yaml
+docker:
+  ghcr.io/travier:
+    use-sigstore-attachments: true
+$ sudo restorecon -RFv /etc/containers/registries.d/ghcr.io-travier.yaml
+
+$ cat /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "reject"
+        }
+    ],
+    "transports": {
+        "docker": {
+            ...
+            "ghcr.io/travier": [
+            {
+                "type": "sigstoreSigned",
+                "fulcio": {
+                    "caPath": "/etc/pki/containers/fulcio_v1.crt.pem",
+                    "oidcIssuer": "https://token.actions.githubusercontent.com",
+                    "subjectEmail": "https://github.com/travier/cosign-test/.github/workflows/cosign-keyless.yml@refs/heads/main"
+                },
+                "rekorPublicKeyPath": "/etc/pki/containers/rekor.pub",
+                "signedIdentity": {
+                    "type": "matchRepository"
+                }
+            }
+            ],
+            ...
+            "": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ]
+        },
+        ...
+    }
+}
+...
+```
 
 ## License
 
