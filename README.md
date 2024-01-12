@@ -29,9 +29,7 @@ $ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-exam
 $ cosign verify --key quay.io-travier-containers.pub quay.io/travier/cosign-example:latest-podman
 ```
 
-How to configure signature verification in podman (does not work for multi-arch
-images yet, see
-[containers/podman#21209](https://github.com/containers/podman/issues/21209)):
+How to configure signature verification in podman:
 
 ```
 $ sudo mkdir -p /etc/pki/containers
