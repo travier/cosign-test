@@ -86,6 +86,6 @@ jobs:
       - name: Sign container image (keyless)
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         run: |
-          cosign sign -y ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
+          cosign sign -y --recursive ${{ env.REGISTRY }}/${{ env.NAME }}@${{ steps.push.outputs.digest }}
         env:
           COSIGN_EXPERIMENTAL: 1
