@@ -1,0 +1,59 @@
+name: "Build container using buildah, push using podman (unsigned)"
+
+env:
+  NAME: "cosign-example"
+  REGISTRY: "quay.io/travier"
+  REGISTRY_DOMAIN: "quay.io"
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'cosign-example/**'
+      - '.github/workflows/unsigned.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'cosign-example/**'
+      - '.github/workflows/unsigned.yml'
+  schedule:
+    - cron:  '0 0 * * MON'
+
+permissions: read-all
+
+# Prevent multiple workflow runs from racing to ensure that pushes are made
+# sequentialy for the main branch. Also cancel in progress workflow runs for
+# pull requests only.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build-push-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build container image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          archs: amd64
+          context: ${{ env.NAME }}
+          image: ${{ env.NAME }}
+          tags: unsigned
+          containerfiles: ${{ env.NAME }}/Containerfile
+          layers: false
+          oci: true
+
+      - name: Push to Container Registry
+        uses: redhat-actions/push-to-registry@v2
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
+        with:
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_SECRET }}
+          image: ${{ env.NAME }}
+          registry: ${{ env.REGISTRY }}
+          tags: unsigned
