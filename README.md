@@ -20,7 +20,7 @@ See the resulting / in progress PRs / issues:
 
 ## Example images
 
-- [quay.io/travier/cosign-example](https://quay.io/repository/travier/cosign-example?tab=tags); `latest-cosign` and `latest-podman` tags
+- [quay.io/travier/cosign-example](https://quay.io/repository/travier/cosign-example?tab=tags): `latest-cosign` and `latest-podman` tags
 - [ghcr.io/travier/cosign-example](https://github.com/travier/cosign-test/pkgs/container/cosign-example): `latest` tag
 
 ## Verifying sigstore container signatures made with self-managed keys
