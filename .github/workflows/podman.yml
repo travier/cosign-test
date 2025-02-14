@@ -32,10 +32,7 @@ concurrency:
 
 jobs:
   build-push-image:
-    runs-on: ubuntu-latest
-    container:
-      image: quay.io/travier/podman-action
-      options: --privileged -v /proc/:/host/proc/:ro
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
