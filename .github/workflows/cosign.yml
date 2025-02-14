@@ -17,8 +17,8 @@ on:
     paths:
       - 'cosign-example/**'
       - '.github/workflows/cosign.yml'
-  schedule:
-    - cron:  '0 0 * * MON'
+  # schedule:
+  #   - cron:  '0 0 * * MON'
 
 permissions: read-all
 

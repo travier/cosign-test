@@ -17,8 +17,8 @@ on:
     paths:
       - 'cosign-example/**'
       - '.github/workflows/cosign-keyless.yml'
-  schedule:
-    - cron:  '0 0 * * MON'
+  # schedule:
+  #   - cron:  '0 0 * * MON'
 
 # Allow:
 # - Read access to the repo content

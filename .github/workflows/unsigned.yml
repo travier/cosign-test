@@ -18,8 +18,8 @@ on:
     paths:
       - 'cosign-example/**'
       - '.github/workflows/unsigned.yml'
-  schedule:
-    - cron:  '0 0 * * MON'
+  # schedule:
+  #   - cron:  '0 0 * * MON'
 
 permissions: read-all
 
