@@ -44,7 +44,7 @@ jobs:
           # ls /host/proc/sys/fs/binfmt_misc
 
       - name: Build container image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v3
         with:
           archs: amd64, arm64, ppc64le, s390x
           context: ${{ env.NAME }}
