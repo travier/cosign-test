@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Timothée Ravier <tim@siosm.fr>
+# SPDX-License-Identifier: CC0-1.0
+
 FROM registry.fedoraproject.org/fedora:39
 
 RUN touch /foo
