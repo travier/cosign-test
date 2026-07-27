@@ -67,8 +67,7 @@ jobs:
             | sudo tee -a /etc/containers/registries.d/${{ env.REGISTRY_DOMAIN }}.yaml
 
       - name: Push to Container Registry
-        # uses: redhat-actions/push-to-registry@v2
-        uses: travier/push-to-registry@69b4e0beeb12653b2f616f823443e3bc211efda3 # sigstore-signing
+        uses: redhat-actions/push-to-registry@94ade333c38ecc0e60e94785125d9a52ca423b37 # v3
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
           username: ${{ secrets.BOT_USERNAME }}
@@ -76,5 +75,4 @@ jobs:
           image: ${{ env.NAME }}
           registry: ${{ env.REGISTRY }}
           tags: latest-podman
-          # extra-args: --sign-by-sigstore-private-key ${{ secrets.COSIGN_PRIVATE_KEY }} --sign-passphrase-file empty
           sigstore-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}

@@ -4,9 +4,6 @@ Example and test repo used to test building container with podman/buildah and
 sign them with podman or cosign / sigstore in GitHub Actions.
 
 See the resulting / in progress PRs / issues:
-- Missing support for specifying signatures in push-to-registry action:
-  - https://github.com/redhat-actions/push-to-registry/issues/89
-  - https://github.com/redhat-actions/push-to-registry/pull/90
 - Missing options in `podman image trust` to set the policy via the command
   line only:
   - https://github.com/containers/podman/issues/16624
