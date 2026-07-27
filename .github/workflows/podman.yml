@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup QEMU for multi-arch builds
         shell: bash
@@ -44,7 +44,7 @@ jobs:
           # ls /host/proc/sys/fs/binfmt_misc
 
       - name: Build container image
-        uses: redhat-actions/buildah-build@v3
+        uses: redhat-actions/buildah-build@3a51aade9afa17e5c78256bcbe2e1ee08c7b995b # v3
         with:
           archs: amd64, arm64, ppc64le, s390x
           context: ${{ env.NAME }}
@@ -63,7 +63,7 @@ jobs:
 
       - name: Push to Container Registry
         # uses: redhat-actions/push-to-registry@v2
-        uses: travier/push-to-registry@sigstore-signing
+        uses: travier/push-to-registry@69b4e0beeb12653b2f616f823443e3bc211efda3 # sigstore-signing
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         with:
           username: ${{ secrets.BOT_USERNAME }}
