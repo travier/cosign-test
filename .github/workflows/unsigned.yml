@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Build container image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v3
         with:
           archs: amd64
           context: ${{ env.NAME }}
