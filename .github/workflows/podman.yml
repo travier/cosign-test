@@ -63,7 +63,7 @@ jobs:
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main'
         shell: bash
         run: |
-          mkdir -p /etc/containers/registries.d/
+          sudo mkdir -p /etc/containers/registries.d
           echo -e "docker:\n  ${{ env.REGISTRY_DOMAIN }}:\n    use-sigstore-attachments: true" \
             | sudo tee -a /etc/containers/registries.d/${{ env.REGISTRY_DOMAIN }}.yaml
 
