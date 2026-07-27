@@ -11,6 +11,16 @@ See the resulting / in progress PRs / issues:
 - Missing command in podman to easily verify that an image is correctly signed:
   - Issue to be filled
 
+Fixed issues:
+- [x] Old podman version in `ubuntu-latest` (22.04) in GitHub Actions runners:
+  - https://github.com/containers/podman/issues/20771
+  - https://github.com/redhat-actions/buildah-build/issues/131
+  - Workaround: https://github.com/travier/podman-action
+- [x] Missing support for specifying signatures in push-to-registry action:
+  - https://github.com/redhat-actions/push-to-registry/issues/89
+  - https://github.com/redhat-actions/push-to-registry/pull/90
+  - https://github.com/redhat-actions/push-to-registry/pull/120
+
 ## Example images
 
 - [quay.io/travier/cosign-example](https://quay.io/repository/travier/cosign-example?tab=tags): `latest-cosign` and `latest-podman` tags
